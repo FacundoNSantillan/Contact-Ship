@@ -3,6 +3,8 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import { LeadsModule } from './modules/leads/leads.module';
 import { DatabaseModule } from './modules/database/database.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { SynchronizationModule } from './modules/synchronization/synchronization.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { DatabaseModule } from './modules/database/database.module';
     }),
     DatabaseModule,
     LeadsModule,
+    ScheduleModule.forRoot(),
+    SynchronizationModule,
   ],
 })
 export class AppModule {}
