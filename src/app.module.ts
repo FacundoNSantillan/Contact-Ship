@@ -1,14 +1,22 @@
 import { Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 import { LeadsModule } from './modules/leads/leads.module';
-import { IaModule } from './modules/ia/ia.module';
-import { SynchronizationModule } from './modules/synchronization/synchronization.module';
-import { SynchronizationService } from './modules/synchronization/synchronization.service';
 import { DatabaseModule } from './modules/database/database.module';
-import { DatabaseService } from './modules/database/database.service';
 
 @Module({
-  imports: [LeadsModule, IaModule, SynchronizationModule, DatabaseModule],
-  controllers: [],
-  providers: [SynchronizationService, DatabaseService],
+  imports: [
+    CacheModule.registerAsync({
+      isGlobal: true, 
+      useFactory: async () => ({
+        store: await redisStore({
+          url: process.env.REDIS_URL || 'redis://localhost:6379',
+          ttl: 60000,
+        }),
+      }),
+    }),
+    DatabaseModule,
+    LeadsModule,
+  ],
 })
 export class AppModule {}
