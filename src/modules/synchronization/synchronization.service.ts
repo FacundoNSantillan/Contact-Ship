@@ -14,7 +14,7 @@ export class SynchronizationService {
     private readonly leadsService: LeadsService,
   ) {}
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCron() {
     this.logger.log('Iniciando sincronización automática de leads...');
     await this.syncLeads();
@@ -36,9 +36,16 @@ export class SynchronizationService {
             phone: user.phone,
             picture: user.picture.large,
           });
+          
           importedCount++;
+
+          if (importedCount < externalLeads.length) { 
+            this.logger.log(`Esperando 20s para el próximo lead (Rate Limit IA)...`);
+            await new Promise(resolve => setTimeout(resolve, 20000));
+          }
+
         } catch (error) {
-          this.logger.warn(`Lead omitido (posible duplicado): ${user.email}`);
+          this.logger.warn(`Lead omitido (posible duplicado o error): ${user.email}`);
         }
       }
 
