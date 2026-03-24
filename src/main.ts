@@ -10,20 +10,22 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,           
+      whitelist: true,
       forbidNonWhitelisted: true,
-      transform: true,            
+      transform: true,
     }),
   );
 
   const config = new DocumentBuilder()
     .setTitle('Contactship Mini API')
-    .setDescription('API para la gestión de leads con integración de IA y sincronización externa')
+    .setDescription(
+      'API para la gestión de leads con integración de IA y sincronización externa',
+    )
     .setVersion('1.0')
     .addTag('leads')
-    .addApiKey({ type: 'apiKey', name: 'x-api-key', in: 'header' }, 'api-key') 
+    .addApiKey({ type: 'apiKey', name: 'x-api-key', in: 'header' }, 'api-key')
     .build();
-  
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
@@ -31,7 +33,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  
+
   logger.log(`Application is running on: http://localhost:${port}/api`);
   logger.log(`Documentation available on: http://localhost:${port}/api/docs`);
 }

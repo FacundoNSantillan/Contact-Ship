@@ -22,7 +22,9 @@ export class SynchronizationService {
 
   async syncLeads() {
     try {
-      const { data } = await firstValueFrom(this.httpService.get(this.EXTERNAL_API));
+      const { data } = await firstValueFrom(
+        this.httpService.get(this.EXTERNAL_API),
+      );
       const externalLeads = data.results;
 
       let importedCount = 0;
@@ -36,22 +38,30 @@ export class SynchronizationService {
             phone: user.phone,
             picture: user.picture.large,
           });
-          
+
           importedCount++;
 
-          if (importedCount < externalLeads.length) { 
-            this.logger.log(`Esperando 20s para el próximo lead (Rate Limit IA)...`);
-            await new Promise(resolve => setTimeout(resolve, 20000));
+          if (importedCount < externalLeads.length) {
+            this.logger.log(
+              `Esperando 20s para el próximo lead (Rate Limit IA)...`,
+            );
+            await new Promise((resolve) => setTimeout(resolve, 20000));
           }
-
         } catch (error) {
-          this.logger.warn(`Lead omitido (posible duplicado o error): ${user.email}`);
+          this.logger.warn(
+            `Lead omitido (posible duplicado o error): ${user.email}`,
+          );
         }
       }
 
-      this.logger.log(`Sincronización finalizada. Leads nuevos importados: ${importedCount}`);
+      this.logger.log(
+        `Sincronización finalizada. Leads nuevos importados: ${importedCount}`,
+      );
     } catch (error) {
-      this.logger.error('Error en la sincronización con RandomUser API', error.stack);
+      this.logger.error(
+        'Error en la sincronización con RandomUser API',
+        error.stack,
+      );
     }
   }
 }

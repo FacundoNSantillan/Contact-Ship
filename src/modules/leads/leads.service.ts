@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, ConflictException, Inject, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  Inject,
+  Logger,
+} from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
 import { DatabaseService } from '../database/database.service';
@@ -16,14 +22,19 @@ export class LeadsService {
   ) {}
 
   async create(dto: CreateLeadDto) {
-    const existing = await this.prisma.lead.findUnique({ 
-      where: { email: dto.email } 
+    const existing = await this.prisma.lead.findUnique({
+      where: { email: dto.email },
     });
-    
+
     if (existing) {
-      throw new ConflictException('El lead con este email ya existe en nuestra base de datos.');
+      throw new ConflictException(
+        'El lead con este email ya existe en nuestra base de datos.',
+      );
     }
-    const insights = await this.iaService.generateLeadInsights(dto.firstName, dto.lastName);
+    const insights = await this.iaService.generateLeadInsights(
+      dto.firstName,
+      dto.lastName,
+    );
 
     const newLead = await this.prisma.lead.create({
       data: {
@@ -45,7 +56,7 @@ export class LeadsService {
 
   async findOne(id: string) {
     const cacheKey = `lead_detail:${id}`;
-    
+
     const cachedData = await this.cacheManager.get(cacheKey);
     if (cachedData) {
       this.logger.debug(`Cache HIT para el lead: ${id}`);
@@ -59,8 +70,8 @@ export class LeadsService {
       throw new NotFoundException(`No se encontró el lead con ID: ${id}`);
     }
 
-    await this.cacheManager.set(cacheKey, lead, 3600000); 
-    
+    await this.cacheManager.set(cacheKey, lead, 3600000);
+
     return lead;
   }
 }

@@ -9,7 +9,7 @@ import { SynchronizationModule } from './modules/synchronization/synchronization
 @Module({
   imports: [
     CacheModule.registerAsync({
-      isGlobal: true, 
+      isGlobal: true,
       useFactory: async () => ({
         store: await redisStore({
           url: process.env.REDIS_URL || 'redis://localhost:6379',

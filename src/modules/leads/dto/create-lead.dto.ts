@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 
 export class CreateLeadDto {
   @ApiProperty({ example: 'John' })
@@ -22,7 +28,10 @@ export class CreateLeadDto {
   @IsOptional()
   phone?: string;
 
-  @ApiProperty({ example: 'https://randomuser.me/api/portraits/men/1.jpg', required: false })
+  @ApiProperty({
+    example: 'https://randomuser.me/api/portraits/men/1.jpg',
+    required: false,
+  })
   @IsUrl()
   @IsOptional()
   picture?: string;
